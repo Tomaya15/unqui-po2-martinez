@@ -7,8 +7,7 @@ public class Empresa {
 	
 	private String nombre;
 	private int cuit;
-	private List<PlantaTemporal> empleadosTemporales = new ArrayList(); // PREGUNTAR 
-	private List<PlantaPermanente> empleadosPermanentes= new ArrayList(); // PREGUNTAR
+	private List<Empleado> empleados = new ArrayList<Empleado>(); 
 
 	public Empresa(String nombre, int cuit) {
 		super();
@@ -32,92 +31,57 @@ public class Empresa {
 		this.cuit = cuit;
 	}
 	
-	public List<PlantaTemporal> getEmpleadosTemporales() {
-		return empleadosTemporales;
+	public List<Empleado> getEmpleados() {
+		return empleados;
 	}
 
-	public void setEmpleadosTemporales(List<PlantaTemporal> empleados) {
-		this.empleadosTemporales = empleados;
-	}
-	public List<PlantaPermanente> getEmpleadosPermanentes() {
-		return empleadosPermanentes;
+	public void setEmpleados(List<Empleado> empleados) {
+		this.empleados = empleados;
 	}
 
-	public void setEmpleadosPermanentes(List<PlantaPermanente> empleadosPermanentes) {
-		this.empleadosPermanentes = empleadosPermanentes;
-	}
 	
-	public double calcularTotalSueldoNetoDeEmpleadosTemporales() {  
-		int i = 0;
-		double total = 0;
-		while ( i <= empleadosTemporales.size() ){
-			PlantaTemporal empleado = empleadosTemporales.get(i);
-			total = total + empleado.calcularSueldoNeto(empleado.calcularSueldoBruto(),empleado.calcularRetenciones());
+	public double calcularTotalSueldoNeto() {
+		int i = 0; 
+		double totalSueldoNeto = 0;
+		while ( i <= empleados.size()) {
+			Empleado empleado = empleados.get(i);
+			totalSueldoNeto = totalSueldoNeto + empleado.calcularSueldoNeto();
 			i++;
 		}
-		return total;
-	}
-	
-	public double calcularTotalSueldoNetoDeEmpleadosPermanentes() {
-		int i = 0;
-		double total = 0;
-		while ( i <= empleadosPermanentes.size() ){
-			PlantaPermanente empleado = empleadosPermanentes.get(i);
-			total = total + empleado.calcularSueldoNeto(empleado.calcularSueldoBruto(),empleado.calcularRetenciones());
-			i++;
-		}
-		return total;
-	}
-	
-	public double calcularTotalSueldoNeto() { 
-		return this.calcularTotalSueldoNetoDeEmpleadosPermanentes() + this.calcularTotalSueldoNetoDeEmpleadosTemporales();
-	}
-	
-	public double calcularTotalSueldoBrutoDeEmpleadosTemporales() {  
-		int i = 0;
-		double total = 0;
-		while ( i <= empleadosTemporales.size() ){
-			PlantaTemporal empleado = empleadosTemporales.get(i);
-			total = total + empleado.calcularSueldoBruto();
-			i++;
-		}
-		return total;
-	}
-	public double calcularTotalSueldoBrutoDeEmpleadosPermanentes() {  
-		int i = 0;
-		double total = 0;
-		while ( i <= empleadosPermanentes.size() ){
-			PlantaPermanente empleado = empleadosPermanentes.get(i);
-			total = total + empleado.calcularSueldoBruto();
-			i++;	
-		}
-		return total;
-	}
-	public double calcularTotalDeSueldoBruto() {
-		return calcularTotalSueldoBrutoDeEmpleadosPermanentes() + calcularTotalSueldoBrutoDeEmpleadosTemporales();
-	}
-	public double calcularTotalRetencionesDeEmpleadosPermanentes() {
-		int i = 0;
-		double total = 0;
-		while ( i <= empleadosPermanentes.size() ){
-			PlantaPermanente empleado = empleadosPermanentes.get(i);
-			total = total + empleado.calcularRetenciones();
-			i++;	
-		}
-		return total;
-	}
-	public double calcularTotalRetencionesDeEmpleadosTemporales() {
-		int i = 0;
-		double total = 0;
-		while ( i <= empleadosTemporales.size() ){
-			PlantaTemporal empleado = empleadosTemporales.get(i);
-			total = total + empleado.calcularRetenciones();
-			i++;	
-		}
-		return total;
+		return totalSueldoNeto;
 	}
 	public double calcularTotalRetenciones() {
-		return this.calcularTotalRetencionesDeEmpleadosPermanentes() + this.calcularTotalRetencionesDeEmpleadosTemporales();
+		int i = 0;
+		double totalRetenciones = 0;
+		while ( i <= empleados.size()){
+			Empleado empleado = empleados.get(i);
+			totalRetenciones = totalRetenciones + empleado.calcularRetenciones(); 
+			i++;
+		}
+		return totalRetenciones;
 	}
+	public double calcularTotalSueldoBruto() {
+		int i = 0;
+		double totalSueldoBruto = 0;
+		while ( i <= empleados.size() ) {
+			Empleado empleado = empleados.get(i);
+			totalSueldoBruto = totalSueldoBruto + empleado.calcularSueldoBruto();
+			i++;
+		}
+		return totalSueldoBruto;
+	}
+	public List<ReciboHaberes> realizarLiquidacionDeSueldos() {
+		List<ReciboHaberes> reciboHaberesList = new ArrayList<ReciboHaberes>();
+		int i = 0;
+		while ( i <= empleados.size() ) { // Hago un recorrido sobre los empleados.
+			Empleado empleado = empleados.get(i); // Tomo a un empleado
+			ReciboHaberes reciboHaberesDeEmpleado = new ReciboHaberes(empleado.getNombre(), empleado.getDireccion(),  // Genero el recibo de haberes 
+									empleado.calcularSueldoBruto(), empleado.calcularSueldoNeto(), empleado.getDesgloceDeConceptos());
+			reciboHaberesList.add(reciboHaberesDeEmpleado); // Añado el recibo de haberres a la lista de un empleado
+			
+		}
+		return reciboHaberesList;
+	}
+	
 }
 

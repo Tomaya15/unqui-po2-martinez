@@ -1,6 +1,8 @@
 package ar.edu.unq.po2.tp2;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlantaTemporal extends Empleado {
 	private LocalDate finDesignacion;
@@ -38,20 +40,38 @@ public class PlantaTemporal extends Empleado {
 	public void setAñosAporte(int añosAporte) {
 		this.añosAporte = añosAporte;
 	}
-
-	public double calcularSueldoBruto() {
-		float asignacionHorasExtras = this.horasExtras * 40;
-
-		return this.getSueldoBasico() + asignacionHorasExtras;
+	// Calcular sueldo bruto
+	public int calcularAsignacionHorasExtras( ) {
+		return this.getHorasExtras() * 40;
 	}
+	public double calcularSueldoBruto() {
+		return this.getSueldoBasico() + this.calcularAsignacionHorasExtras();
+	}
+	// Calcular retenciones 
+	public double calcularObraSocial() {
+		return this.calcularSueldoBruto() * 0.10;
+	}
+	public double calcularAsignacionAportes() {
+		return this.getAñosAporte() > 50 ? 25 : 0;
+	}
+	public double calcularJubilatorios() {
+		return (this.calcularSueldoBruto() * 0.10) + (5 * this.getHorasExtras());
+	}
+	public double calcularRetenciones() {		
 
-	public double calcularRetenciones() {
-		double obraSocial = this.calcularSueldoBruto() * 0.10;
-		int asignacionAportes = this.getAñosAporte() > 50 ? 25 : 0;
-		double jubilatorios = (this.calcularSueldoBruto() * 0.10) + (5 * this.getHorasExtras());
-
-		return obraSocial + asignacionAportes + jubilatorios;
-
+		return this.calcularObraSocial() + this.calcularAsignacionAportes() + this.calcularJubilatorios();
+	}
+	// Desgloce de conceptos para el cobro de un empleado de planta temporal.
+	public List<String> getDesgloceDeConceptos(){
+			List<String> list  = new ArrayList<String>();
+			list.add("Bono por horas extra: +" + this.calcularAsignacionHorasExtras());
+			list.add("Sueldo basico: +" + this.getSueldoBasico());
+			list.add("Obra social -" + this.calcularObraSocial());
+			list.add("Aportes - " + this.calcularAsignacionAportes());
+			list.add("Jubilatorios -" + this.calcularJubilatorios());
+			
+			
+			return list;
 	}
 
 }

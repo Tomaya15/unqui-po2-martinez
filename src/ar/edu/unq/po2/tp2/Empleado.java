@@ -2,6 +2,7 @@ package ar.edu.unq.po2.tp2;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 public abstract class Empleado {
 
@@ -66,9 +67,10 @@ public abstract class Empleado {
 		return edad.getYears();
 	}
 	
-	public double calcularSueldoNeto(double sueldoBruto, double retenciones) {
+	public double calcularSueldoNeto() {
 		 return  this.calcularSueldoBruto()- this.calcularRetenciones();
 	}
 	public abstract double calcularSueldoBruto() ;
 	public abstract double calcularRetenciones() ;
+	public abstract List<String> getDesgloceDeConceptos();
 }

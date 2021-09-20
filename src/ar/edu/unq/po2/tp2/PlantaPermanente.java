@@ -1,6 +1,8 @@
 package ar.edu.unq.po2.tp2;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlantaPermanente extends Empleado {
 	private int cantidadHijos;
@@ -38,23 +40,44 @@ public class PlantaPermanente extends Empleado {
 	public void setTieneConyuge(boolean tieneConyuge) {
 		this.tieneConyuge = tieneConyuge;
 	}
-	public float calcularSalarioFamiliar() {
-		float asignacionPorHijo = 150 * this.getCantidadHijos();
-		float asignacionPorConyuge = this.tieneConyuge? 100 : 0 ;
-		float antiguedad = 50 * this.añosAntiguedad;
-		float salarioFamiliar = asignacionPorHijo + asignacionPorConyuge + antiguedad;
-		
-		return salarioFamiliar;
+	// Calculos para para la asignacion familiar 
+	private float calcularAsignacionPorHijo() {
+		return 150 * this.getCantidadHijos();
+	}
+	private int calcularAsginacionPorConyuge() {
+		return this.tieneConyuge? 100 : 0 ;
+	}
+	private int calcularAntiguedad() {
+		return 50 * this.añosAntiguedad;
 	}
 	
-	public float calcularSueldoBruto() {
+	private float calcularSalarioFamiliar() {
+		return this.calcularAsignacionPorHijo() + this.calcularAsginacionPorConyuge() + this.calcularAntiguedad();
+	}
+	// Calcular sueldo bruto 
+	public double calcularSueldoBruto() {
 		return this.getSueldoBasico() + this.calcularSalarioFamiliar();
 	}
 	
+	// Calculos para las retenciones
+	private double calcularObraSocial() {
+		return (( this.calcularSueldoBruto() * 0.10 ) + (this.cantidadHijos * 20));
+	}
+	private double calcularAportesJubilatorios() {
+		return this.calcularSueldoBruto() * 0.15;
+	}
+	
 	public double calcularRetenciones() {
-		double obraSocial = ( this.calcularSueldoBruto() * 0.10 ) + (this.cantidadHijos * 20) ;
-		double aportesJubilatorios = this.calcularSueldoBruto() * 0.15;
-
-		return obraSocial + aportesJubilatorios; 
+		return this.calcularObraSocial() + this.calcularAportesJubilatorios(); 
+	}
+	// Lista de Desgloce de concepto de cobro
+	public List<String> getDesgloceDeConceptos(){
+		List<String> list  = new ArrayList<String>();
+		list.add("Salario familiar: + " + this.calcularSalarioFamiliar());
+		list.add("Sueldo basico: + " + this.getSueldoBasico());
+		list.add("Obra Social - " + this.calcularObraSocial());
+		list.add("Aportes Jubilatorios -" + this.calcularAportesJubilatorios());
+		
+		return list;
 	}
 }
